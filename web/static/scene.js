@@ -278,6 +278,7 @@ export function createScene(viewport, circuit) {
   const wheels = Array.from({ length: 4 }, makeWheel);
   scene.add(car, ...wheels);
 
+  let hasPose = false;
   const resize = () => {
     const { clientWidth, clientHeight } = viewport;
     camera.aspect = clientWidth / clientHeight;
@@ -285,6 +286,7 @@ export function createScene(viewport, circuit) {
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(Math.min(devicePixelRatio, 1.6));
     renderer.setSize(clientWidth, clientHeight, false);
+    if (hasPose) renderer.render(scene, camera);
   };
   new ResizeObserver(resize).observe(viewport);
   resize();
@@ -323,6 +325,7 @@ export function createScene(viewport, circuit) {
     look.lerp(target, blend);
     camera.lookAt(look);
     renderer.render(scene, camera);
+    hasPose = true;
   }
 
   return { render };

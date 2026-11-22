@@ -216,7 +216,6 @@ function startTrial(engine) {
   const spawn = circuit.centers[3];
   const checkpoints = [96, 192, 288, 0].map((i) => circuit.centers[i]);
   const fixedStep = 1 / 90;
-  let active = false;
   let snap = true;
   let beforeFrame = 0;
   let accumulator = 0;
@@ -231,7 +230,8 @@ function startTrial(engine) {
     const offset = engine._carState() >>> 2;
     return engine.HEAPF32.subarray(offset, offset + 41);
   };
-  const controls = installControls(reset, () => active);
+  const active = () => view.intro.hidden;
+  const controls = installControls(reset, active);
 
   function reset() {
     if (!engine._resetCar(spawn.center.x, spawn.center.y, Math.atan2(-spawn.forward.x, spawn.forward.y))) {
@@ -243,7 +243,7 @@ function startTrial(engine) {
     drifting = false;
     snap = true;
     controls.clear();
-    if (active) view.game.focus({ preventScroll: true });
+    if (active()) view.game.focus({ preventScroll: true });
   }
 
   function updateTiming(state) {
@@ -288,7 +288,7 @@ function startTrial(engine) {
     const elapsed = Math.min((now - (beforeFrame || now)) / 1000, .085);
     beforeFrame = now;
     let throttle = 0;
-    if (active && !document.hidden) {
+    if (!document.hidden) {
       const input = controls.read();
       throttle = input.throttle;
       accumulator += elapsed;
@@ -300,26 +300,30 @@ function startTrial(engine) {
       }
     }
     const state = readState();
-    if (active) updateDashboard(state);
-    sound.update(state[36], throttle, active && !document.hidden);
-    scene.render(state, active, elapsed, snap);
+    updateDashboard(state);
+    sound.update(state[36], throttle, !document.hidden);
+    scene.render(state, true, elapsed, snap);
     snap = false;
     requestAnimationFrame(frame);
   }
 
   reset();
+  scene.render(readState(), false, 0, true);
   view.start.dataset.copy = "start";
   view.start.textContent = copy[locale].start;
   view.start.disabled = false;
   view.start.addEventListener("click", () => {
-    active = true;
     snap = true;
     view.intro.hidden = true;
     view.dashboard.hidden = false;
     view.game.focus({ preventScroll: true });
-  });
+    requestAnimationFrame(frame);
+  }, { once: true });
   byId("reset").addEventListener("click", reset);
-  requestAnimationFrame(frame);
+  document.addEventListener("visibilitychange", () => {
+    beforeFrame = 0;
+    if (document.hidden) sound.update(0, 0, false);
+  });
 }
 
 createEngine().then(startTrial).catch((error) => {
