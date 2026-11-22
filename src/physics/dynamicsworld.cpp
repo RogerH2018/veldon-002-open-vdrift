@@ -20,8 +20,11 @@
 #include "dynamicsworld.h"
 #include "fracturebody.h"
 #include "collision_contact.h"
+// Veldon Game web port, 2026-11-22: the browser circuit uses Bullet meshes.
+#ifndef VDRIFT_WEB
 #include "tobullet.h"
 #include "track.h"
+#endif
 
 #include "BulletCollision/CollisionShapes/btCollisionShape.h"
 
@@ -108,10 +111,12 @@ DynamicsWorld::~DynamicsWorld()
 	reset();
 }
 
+#ifndef VDRIFT_WEB
 const RoadPatch * DynamicsWorld::GetSectorPatch(int i)
 {
 	return track->GetSectorPatch(i);
 }
+#endif
 
 bool DynamicsWorld::castRay(
 	const btVector3 & origin,
@@ -145,6 +150,7 @@ bool DynamicsWorld::castRay(
 				ts = static_cast<TrackSurface*>(ray.m_shape->getUserPointer());
 
 			// verify surface pointer
+#ifndef VDRIFT_WEB
 			if (track)
 			{
 				const std::vector<TrackSurface> & surfaces = track->GetSurfaces();
@@ -153,12 +159,14 @@ bool DynamicsWorld::castRay(
 					ts = NULL;
 				assert(ts);
 			}
+#endif
 
 			if (ts)
 				s = ts;
 		}
 
 		// track bezierpatch collision
+#ifndef VDRIFT_WEB
 		if (track)
 		{
 			Vec3 org = ToMathVector<float>(origin);
@@ -173,6 +181,7 @@ bool DynamicsWorld::castRay(
 				d = (colpoint - org).Magnitude();
 			}
 		}
+#endif
 
 		contact = CollisionContact(p, n, d, patch_id, patch, s, c);
 		return true;

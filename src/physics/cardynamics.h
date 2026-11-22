@@ -38,6 +38,9 @@
 
 #include "BulletDynamics/Dynamics/btActionInterface.h"
 
+#include <functional>
+#include <memory>
+
 struct btCollisionObjectWrapper;
 class btCollisionWorld;
 class btManifoldPoint;
@@ -69,6 +72,17 @@ public:
 		const bool damage,
 		DynamicsWorld & world,
 		ContentManager & content,
+		std::ostream & error);
+
+	// Load vehicle physics independently of graphics and audio content.
+	bool Load(
+		const PTree & cfg,
+		const std::string & cartire,
+		const btVector3 & position,
+		const btQuaternion & rotation,
+		bool damage,
+		DynamicsWorld & world,
+		const std::function<std::shared_ptr<const PTree>(const std::string &)> & loadTireConfig,
 		std::ostream & error);
 
 	// set body position

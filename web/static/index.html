@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#131714">
+    <meta name="description" content="在铜线赛车场练习漂移。基于 VDrift 车辆动力学的浏览器试玩。">
+    <title>VDrift Web · Veldon Game</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="./style.css">
+    <script type="module" src="./game.js"></script>
+  </head>
+  <body>
+    <main class="game" aria-label="VDrift Web" tabindex="-1">
+      <div id="viewport" aria-hidden="true"></div>
+      <header class="header">
+        <a class="wordmark" href="https://www.veldongame.com/games/open-source/">
+          <span class="monogram" aria-hidden="true">V</span><span>VELDON<span class="wordmark-game"> GAME</span></span>
+        </a>
+        <div class="edition"><strong>VDRIFT WEB</strong><span>002 / OPEN</span></div>
+        <div class="header-actions">
+          <button id="language" type="button" lang="en">EN</button>
+          <button id="sound" type="button" aria-pressed="false" data-copy="soundOff">声音关</button>
+        </div>
+      </header>
+
+      <section id="dashboard" class="dashboard" aria-label="驾驶仪表" hidden>
+        <div class="lap panel">
+          <span class="eyebrow" data-copy="lap">圈数</span>
+          <strong id="lap-count">01</strong>
+          <span id="lap-time">00:00.00</span>
+        </div>
+        <div class="drift panel">
+          <span class="eyebrow" data-copy="score">漂移分</span>
+          <strong id="drift-score">0</strong>
+          <span id="combo" class="combo" hidden></span>
+        </div>
+        <div class="map panel">
+          <span class="eyebrow" data-copy="circuit">铜线赛道</span>
+          <canvas id="map" width="178" height="114" aria-hidden="true"></canvas>
+          <button id="reset" type="button" data-copy="reset" title="R">重开</button>
+        </div>
+        <div class="speed panel">
+          <div class="speed-line"><strong id="speed">000</strong><span>KM/H</span><b id="gear">N</b></div>
+          <div class="rpm-track" aria-hidden="true"><div id="rpm"></div></div>
+          <p id="best-lap" hidden></p>
+        </div>
+        <p class="drive-help"><kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd> <span data-copy="drive">开车</span><span class="divider"></span><kbd>SPACE</kbd> <span data-copy="handbrake">手刹</span></p>
+        <div class="touch-controls" aria-label="触屏控制">
+          <div>
+            <button type="button" data-control="left" aria-label="向左">◀</button>
+            <button type="button" data-control="right" aria-label="向右">▶</button>
+          </div>
+          <div>
+            <button type="button" data-control="handbrake" data-copy="handbrake">手刹</button>
+            <button type="button" data-control="brake" data-copy="brake">刹车</button>
+            <button type="button" data-control="throttle" data-copy="throttle">油门</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="intro" class="intro">
+        <div class="intro-content">
+          <p class="eyebrow circuit-tag" data-copy="trial">漂移计时试玩</p>
+          <h1>COPPERLINE</h1>
+          <p class="subtitle" data-copy="trialDescription">开着后驱双门跑车驶上铜线赛道，练习漂移，刷新单圈成绩。</p>
+          <button class="start" id="start" type="button" disabled data-copy="loading">正在加载车辆动力学…</button>
+          <p id="load-error" class="error" role="alert" hidden></p>
+          <p class="intro-help"><kbd>W A S D</kbd> / <kbd>↑ ← ↓ →</kbd> <span data-copy="drive">开车</span><span class="divider"></span><kbd>SPACE</kbd> <span data-copy="handbrake">手刹</span></p>
+          <p class="intro-touch" data-copy="touchHelp">使用屏幕上的方向键、油门和手刹。</p>
+        </div>
+      </section>
+      <footer class="credits">
+        <a href="https://github.com/VDrift/vdrift" data-copy="upstream">VDrift 原作</a>
+        <a href="https://github.com/RogerH2018/veldon-002-open-vdrift/tree/web-trial" data-copy="source">本版源码</a>
+        <a href="./LICENSE">GPL-3.0+</a>
+      </footer>
+    </main>
+  </body>
+</html>

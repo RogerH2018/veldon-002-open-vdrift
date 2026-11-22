@@ -1,6 +1,8 @@
 VDrift - A Car Racing Simulator for Multiple Platforms
 ======================================================
 
+**Veldon Game 002-open** · [Play Copperline Circuit](https://rogerh2018.github.io/veldon-002-open-vdrift/) · [Browser build and credits](web/README.md)
+
 VDrift is a cross-platform, open source driving simulation made with drift
 racing in mind. It is released under the [GNU General Public License (GPL) v3](http://www.gnu.org/licenses/gpl-3.0.en.html).
 It is currently available for FreeBSD, Linux, Mac OS X and Windows.

@@ -25,7 +25,9 @@
 #include "wheelconstraint.h"
 #include "loadcollisionshape.h"
 #include "coordinatesystem.h"
+#ifndef VDRIFT_WEB
 #include "content/contentmanager.h"
+#endif
 #include "cfg/ptree.h"
 #include "fastmath.h"
 #include "minmax.h"
@@ -517,6 +519,8 @@ CarDynamics::~CarDynamics()
 	Clear();
 }
 
+// Veldon Game web port, 2026-11-22: allow a standalone tire configuration loader.
+#ifndef VDRIFT_WEB
 bool CarDynamics::Load(
 	const PTree & cfg,
 	const std::string & cardir,
@@ -526,6 +530,26 @@ bool CarDynamics::Load(
 	const bool damage,
 	DynamicsWorld & world,
 	ContentManager & content,
+	std::ostream & error)
+{
+	return Load(cfg, cartire, position, rotation, damage, world,
+		[&](const std::string & name)
+		{
+			std::shared_ptr<PTree> config;
+			content.load(config, cardir, name);
+			return config;
+		}, error);
+}
+#endif
+
+bool CarDynamics::Load(
+	const PTree & cfg,
+	const std::string & cartire,
+	const btVector3 & position,
+	const btQuaternion & rotation,
+	bool damage,
+	DynamicsWorld & world,
+	const std::function<std::shared_ptr<const PTree>(const std::string &)> & loadTireConfig,
 	std::ostream & error)
 {
 	if (!LoadClutch(cfg, clutch, error)) return false;
@@ -577,7 +601,6 @@ bool CarDynamics::Load(
 		if (!LoadWheel(cfg_wheel, wheel[i], error)) return false;
 
 		std::string tirestr(cartire);
-		std::shared_ptr<PTree> cfg_tire;
 		if ((cartire.empty() || cartire == "default") &&
 			!cfg_wheel.get("tire.type", tirestr, error)) return false;
 		#if defined(VDRIFTP)
@@ -585,8 +608,8 @@ bool CarDynamics::Load(
 		#elif defined(VDRIFTN)
 		tirestr += "n";
 		#endif
-		content.load(cfg_tire, cardir, tirestr);
-		if (!LoadTire(cfg_wheel, *cfg_tire, tire[i], error)) return false;
+		const auto cfg_tire = loadTireConfig(tirestr);
+		if (!cfg_tire || !LoadTire(cfg_wheel, *cfg_tire, tire[i], error)) return false;
 		tire[i].initSlipLUT(tire_slip_lut[i]);
 
 		const PTree * cfg_brake;
