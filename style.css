@@ -78,9 +78,18 @@ kbd { display: inline-block; border: 1px solid rgba(255,255,255,.3); padding: 3p
   .edition span, .wordmark-game { display: none; }
   .header-actions button { padding: 0 8px; }
   .intro { align-items: end; padding-bottom: 14vh; background: linear-gradient(0deg, rgba(13, 18, 15, .94) 0, rgba(13, 18, 15, .60) 37%, transparent 88%); }
-  .map { width: 105px; padding: 8px; }
+  .map { width: 96px; padding: 8px; }
   .map .eyebrow { display: none; }
   .lap, .drift, .map { top: 75px; }
+  .lap, .drift { padding: 8px; }
+  .lap { min-width: 100px; }
+  .drift { min-width: 86px; }
+  .drift .eyebrow { font-size: 11px; letter-spacing: .06em; }
+  #lap-time { font-size: 17px; }
+}
+
+@media (max-width: 360px) {
+  .wordmark > span:last-child { display: none; }
 }
 
 @media (pointer: coarse) {
